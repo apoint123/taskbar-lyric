@@ -3,25 +3,47 @@
 //! 由于托盘中程序图标的添加和减少并不触发 UIA 或者注册表事件，只能监听托盘尺寸了
 
 use std::{
-    sync::{Arc, LazyLock, Mutex},
+    sync::{
+        Arc,
+        LazyLock,
+        Mutex,
+    },
     thread,
 };
 
 use anyhow::Result;
-use tracing::{error, info, warn};
 use windows::Win32::{
-    Foundation::{HWND, LPARAM, WPARAM},
+    Foundation::{
+        HWND,
+        LPARAM,
+        WPARAM,
+    },
     System::Threading::GetCurrentThreadId,
     UI::{
-        Accessibility::{HWINEVENTHOOK, SetWinEventHook, UnhookWinEvent},
+        Accessibility::{
+            HWINEVENTHOOK,
+            SetWinEventHook,
+            UnhookWinEvent,
+        },
         WindowsAndMessaging::{
-            EVENT_OBJECT_LOCATIONCHANGE, GetClassNameW, GetMessageW, GetWindowThreadProcessId, MSG,
-            PostThreadMessageW, WINEVENT_OUTOFCONTEXT, WM_QUIT,
+            EVENT_OBJECT_LOCATIONCHANGE,
+            GetClassNameW,
+            GetMessageW,
+            GetWindowThreadProcessId,
+            MSG,
+            PostThreadMessageW,
+            WINEVENT_OUTOFCONTEXT,
+            WM_QUIT,
         },
     },
 };
 
-use crate::utils::find_taskbar_hwnd;
+use crate::{
+    error,
+    info,
+    utils::find_taskbar_hwnd,
+    warn,
+};
 
 pub type TrayChangedCallback = Box<dyn Fn() + Send + Sync + 'static>;
 
@@ -129,7 +151,10 @@ impl Drop for TrayWatcher {
 
 #[cfg(test)]
 mod tests {
-    use std::time::{Duration, Instant};
+    use std::time::{
+        Duration,
+        Instant,
+    };
 
     use serial_test::serial;
 

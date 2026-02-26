@@ -2,7 +2,10 @@ use windows::{
     Win32::{
         Foundation::HWND,
         UI::WindowsAndMessaging::{
-            FindWindowW, GetWindowLongPtrW, SetWindowLongPtrW, WINDOW_LONG_PTR_INDEX,
+            FindWindowW,
+            GetWindowLongPtrW,
+            SetWindowLongPtrW,
+            WINDOW_LONG_PTR_INDEX,
         },
     },
     core::w,
@@ -10,7 +13,10 @@ use windows::{
 use windows_core::PCWSTR;
 use winreg::{
     RegKey,
-    enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE},
+    enums::{
+        HKEY_CURRENT_USER,
+        HKEY_LOCAL_MACHINE,
+    },
 };
 
 pub const BRIDGE_CLASS: PCWSTR = w!("Windows.UI.Composition.DesktopWindowContentBridge");

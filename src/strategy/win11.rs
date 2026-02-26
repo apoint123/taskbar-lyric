@@ -1,21 +1,46 @@
-use tracing::{debug, error};
 use windows::{
     Win32::{
-        Foundation::{HWND, RECT},
+        Foundation::{
+            HWND,
+            RECT,
+        },
         UI::WindowsAndMessaging::{
-            FindWindowExW, GWL_EXSTYLE, GWL_STYLE, GetWindowRect, SetParent, WINDOW_EX_STYLE,
-            WINDOW_STYLE, WS_CAPTION, WS_EX_LAYERED, WS_EX_TOOLWINDOW, WS_MAXIMIZEBOX,
-            WS_MINIMIZEBOX, WS_SYSMENU, WS_THICKFRAME,
+            FindWindowExW,
+            GWL_EXSTYLE,
+            GWL_STYLE,
+            GetWindowRect,
+            SetParent,
+            WINDOW_EX_STYLE,
+            WINDOW_STYLE,
+            WS_CAPTION,
+            WS_EX_LAYERED,
+            WS_EX_TOOLWINDOW,
+            WS_MAXIMIZEBOX,
+            WS_MINIMIZEBOX,
+            WS_SYSMENU,
+            WS_THICKFRAME,
         },
     },
     core::w,
 };
 
 use crate::{
-    LayoutParams, TaskbarStrategy,
-    strategy::{Rect, TaskbarLayout, Win11Layout},
+    LayoutParams,
+    TaskbarStrategy,
+    debug,
+    error,
+    strategy::{
+        Rect,
+        TaskbarLayout,
+        Win11Layout,
+    },
     uia::TaskbarScanner,
-    utils::{BRIDGE_CLASS, check_registry_value, find_taskbar_hwnd, modify_window_long},
+    utils::{
+        BRIDGE_CLASS,
+        check_registry_value,
+        find_taskbar_hwnd,
+        modify_window_long,
+    },
 };
 
 pub struct Win11Strategy {
@@ -110,6 +135,7 @@ impl TaskbarStrategy for Win11Strategy {
             match TaskbarScanner::new() {
                 Ok(s) => self.scanner = Some(s),
                 Err(e) => {
+                    let _ = &e;
                     error!("[Win11] Scanner 初始化失败: {e:?}");
                     return None;
                 }
@@ -120,6 +146,7 @@ impl TaskbarStrategy for Win11Strategy {
             match scanner.scan_taskbar(self.h_taskbar) {
                 Ok(b) => b,
                 Err(e) => {
+                    let _ = &e;
                     error!("[Win11] scan_taskbar 失败: {e:?}");
                     self.scanner = None;
                     return None;

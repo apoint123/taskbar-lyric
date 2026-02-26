@@ -5,37 +5,64 @@
 
 use std::{
     ptr,
-    sync::{Arc, mpsc},
+    sync::{
+        Arc,
+        mpsc,
+    },
     thread,
 };
 
-use anyhow::{Result, anyhow};
+use anyhow::{
+    Result,
+    anyhow,
+};
 use windows::{
     Win32::{
-        Foundation::{LPARAM, WPARAM},
+        Foundation::{
+            LPARAM,
+            WPARAM,
+        },
         System::{
             Com::{
-                CLSCTX_INPROC_SERVER, COINIT_MULTITHREADED, CoCreateInstance, CoInitializeEx,
-                CoUninitialize, SAFEARRAY,
+                CLSCTX_INPROC_SERVER,
+                COINIT_MULTITHREADED,
+                CoCreateInstance,
+                CoInitializeEx,
+                CoUninitialize,
+                SAFEARRAY,
             },
             Threading::GetCurrentThreadId,
             Variant::VARIANT,
         },
         UI::{
             Accessibility::{
-                CUIAutomation, IUIAutomation, IUIAutomationElement,
+                CUIAutomation,
+                IUIAutomation,
+                IUIAutomationElement,
                 IUIAutomationPropertyChangedEventHandler,
                 IUIAutomationPropertyChangedEventHandler_Impl,
                 IUIAutomationStructureChangedEventHandler,
-                IUIAutomationStructureChangedEventHandler_Impl, StructureChangeType,
-                TreeScope_Descendants, UIA_BoundingRectanglePropertyId, UIA_PROPERTY_ID,
+                IUIAutomationStructureChangedEventHandler_Impl,
+                StructureChangeType,
+                TreeScope_Descendants,
+                UIA_BoundingRectanglePropertyId,
+                UIA_PROPERTY_ID,
             },
             WindowsAndMessaging::{
-                DispatchMessageW, GetMessageW, MSG, PostThreadMessageW, TranslateMessage, WM_QUIT,
+                DispatchMessageW,
+                GetMessageW,
+                MSG,
+                PostThreadMessageW,
+                TranslateMessage,
+                WM_QUIT,
             },
         },
     },
-    core::{Ref, Result as WinResult, implement},
+    core::{
+        Ref,
+        Result as WinResult,
+        implement,
+    },
 };
 
 use crate::utils::find_taskbar_hwnd;
@@ -177,8 +204,14 @@ pub type UiaWatcher = NativeUiaWatcher;
 #[cfg(test)]
 mod tests {
     use std::{
-        sync::{Arc, Mutex},
-        time::{Duration, Instant},
+        sync::{
+            Arc,
+            Mutex,
+        },
+        time::{
+            Duration,
+            Instant,
+        },
     };
 
     use super::*;

@@ -2,26 +2,62 @@ use std::{
     ffi::c_void,
     sync::{
         Arc,
-        atomic::{AtomicBool, Ordering},
-        mpsc::{self, Receiver, Sender},
+        atomic::{
+            AtomicBool,
+            Ordering,
+        },
+        mpsc::{
+            self,
+            Receiver,
+            Sender,
+        },
     },
-    thread::{self},
+    thread::{
+        self,
+    },
 };
 
-use anyhow::{Result, anyhow};
-use strategy::{LayoutParams, LegacyStrategy, TaskbarLayout, TaskbarStrategy, Win11Strategy};
-use tracing::{debug, error, info, warn};
+use anyhow::{
+    Result,
+    anyhow,
+};
+use strategy::{
+    LayoutParams,
+    LegacyStrategy,
+    TaskbarLayout,
+    TaskbarStrategy,
+    Win11Strategy,
+};
 use utils::get_windows_build_number;
 use windows::{
     Win32::{
-        Foundation::{CloseHandle, HANDLE, HWND, WAIT_OBJECT_0},
+        Foundation::{
+            CloseHandle,
+            HANDLE,
+            HWND,
+            WAIT_OBJECT_0,
+        },
         System::{
-            Com::{COINIT_MULTITHREADED, CoInitializeEx, CoUninitialize},
-            Registry::{
-                HKEY, HKEY_CURRENT_USER, KEY_NOTIFY, REG_NOTIFY_CHANGE_LAST_SET, RegCloseKey,
-                RegNotifyChangeKeyValue, RegOpenKeyExW,
+            Com::{
+                COINIT_MULTITHREADED,
+                CoInitializeEx,
+                CoUninitialize,
             },
-            Threading::{CreateEventW, INFINITE, SetEvent, WaitForMultipleObjects},
+            Registry::{
+                HKEY,
+                HKEY_CURRENT_USER,
+                KEY_NOTIFY,
+                REG_NOTIFY_CHANGE_LAST_SET,
+                RegCloseKey,
+                RegNotifyChangeKeyValue,
+                RegOpenKeyExW,
+            },
+            Threading::{
+                CreateEventW,
+                INFINITE,
+                SetEvent,
+                WaitForMultipleObjects,
+            },
         },
     },
     core::w,
@@ -37,22 +73,16 @@ mod uia;
 mod uia_watcher;
 mod utils;
 
-pub use strategy::{Rect, Win10Layout, Win11Layout};
+pub use strategy::{
+    Rect,
+    Win10Layout,
+    Win11Layout,
+};
 pub use tray_watcher::TrayWatcher;
 pub use uia_watcher::UiaWatcher;
 
 pub type TaskbarLayoutCallback = Box<dyn Fn(TaskbarLayout) + Send + 'static>;
 pub type RegistryChangedCallback = Box<dyn Fn() + Send + Sync + 'static>;
-
-/// 初始化日志系统
-///
-/// 建议在调用任何其他函数之前调用
-///
-/// ## Errors
-/// 在初始化日志失败时抛出错误
-pub fn init_logger(log_dir: String) -> Result<()> {
-    logger::init(log_dir)
-}
 
 enum TaskbarCommand {
     Embed { hwnd_ptr: usize },
@@ -290,6 +320,7 @@ impl RegistryWatcher {
             let reg_event = match CreateEventW(None, false, false, None) {
                 Ok(evt) => evt,
                 Err(e) => {
+                    let _ = &e;
                     error!("创建注册表事件失败: {e}");
                     let _ = RegCloseKey(h_key);
                     return;

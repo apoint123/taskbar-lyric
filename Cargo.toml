@@ -3,19 +3,14 @@ name = "taskbar-lyric"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+tracing = ["dep:tracing"]
+
 [dependencies]
 anyhow = "1"
 winreg = "0.55"
-
-# Log
-tracing = "0.1"
-tracing-appender = "0.2"
-tracing-subscriber = { version = "0.3", features = [
-  "env-filter",
-  "time",
-  "local-time",
-] }
-time = { version = "0.3", features = ["macros", "formatting", "local-offset"] }
+tracing = { version = "0.1", optional = true }
 windows-core = "0.62.2"
 
 [dependencies.windows]

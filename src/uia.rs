@@ -1,19 +1,35 @@
-use anyhow::{Context, Result, bail};
+use anyhow::{
+    Context,
+    Result,
+    bail,
+};
 use windows::Win32::{
-    Foundation::{HWND, RPC_E_CHANGED_MODE},
+    Foundation::{
+        HWND,
+        RPC_E_CHANGED_MODE,
+    },
     System::Com::{
-        CLSCTX_INPROC_SERVER, COINIT_MULTITHREADED, CoCreateInstance, CoInitializeEx,
+        CLSCTX_INPROC_SERVER,
+        COINIT_MULTITHREADED,
+        CoCreateInstance,
+        CoInitializeEx,
         CoUninitialize,
     },
     UI::{
         Accessibility::{
-            CUIAutomation, IUIAutomation, IUIAutomationElement, TreeScope_Descendants,
+            CUIAutomation,
+            IUIAutomation,
+            IUIAutomationElement,
+            TreeScope_Descendants,
         },
         WindowsAndMessaging::FindWindowExW,
     },
 };
 
-use crate::{strategy::Rect, utils::BRIDGE_CLASS};
+use crate::{
+    strategy::Rect,
+    utils::BRIDGE_CLASS,
+};
 
 const CLASS_TASKLIST_BUTTON: &str = "Taskbar.TaskListButtonAutomationPeer";
 const ID_START_BUTTON: &str = "StartButton";

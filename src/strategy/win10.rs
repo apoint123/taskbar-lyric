@@ -1,20 +1,49 @@
-use tracing::{debug, error, trace};
 use windows::{
     Win32::{
-        Foundation::{HWND, RECT},
+        Foundation::{
+            HWND,
+            RECT,
+        },
         UI::WindowsAndMessaging::{
-            FindWindowExW, GWL_EXSTYLE, GWL_STYLE, GetWindowRect, MoveWindow, SetParent,
-            WINDOW_EX_STYLE, WINDOW_STYLE, WS_CAPTION, WS_EX_LAYERED, WS_EX_TOOLWINDOW,
-            WS_MAXIMIZEBOX, WS_MINIMIZEBOX, WS_SYSMENU, WS_THICKFRAME,
+            FindWindowExW,
+            GWL_EXSTYLE,
+            GWL_STYLE,
+            GetWindowRect,
+            MoveWindow,
+            SetParent,
+            WINDOW_EX_STYLE,
+            WINDOW_STYLE,
+            WS_CAPTION,
+            WS_EX_LAYERED,
+            WS_EX_TOOLWINDOW,
+            WS_MAXIMIZEBOX,
+            WS_MINIMIZEBOX,
+            WS_SYSMENU,
+            WS_THICKFRAME,
         },
     },
-    core::{PCWSTR, w},
+    core::{
+        PCWSTR,
+        w,
+    },
 };
 
 use crate::{
     GAP,
-    strategy::{LayoutParams, Rect, TaskbarLayout, TaskbarStrategy, Win10Layout},
-    utils::{find_taskbar_hwnd, modify_window_long},
+    debug,
+    error,
+    strategy::{
+        LayoutParams,
+        Rect,
+        TaskbarLayout,
+        TaskbarStrategy,
+        Win10Layout,
+    },
+    trace,
+    utils::{
+        find_taskbar_hwnd,
+        modify_window_long,
+    },
 };
 
 #[allow(clippy::struct_field_names)]
