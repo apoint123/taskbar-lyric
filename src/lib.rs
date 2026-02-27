@@ -73,11 +73,7 @@ mod uia;
 mod uia_watcher;
 mod utils;
 
-pub use strategy::{
-    Rect,
-    Win10Layout,
-    Win11Layout,
-};
+pub use strategy::Rect;
 pub use tray_watcher::TrayWatcher;
 pub use uia_watcher::UiaWatcher;
 

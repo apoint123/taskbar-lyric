@@ -30,9 +30,11 @@ use crate::{
     debug,
     error,
     strategy::{
+        AvailableSpace,
+        ExtraLayoutInfo,
         Rect,
+        SystemType,
         TaskbarLayout,
-        Win11Layout,
     },
     uia::TaskbarScanner,
     utils::{
@@ -113,7 +115,11 @@ impl TaskbarStrategy for Win11Strategy {
             return None;
         }
 
-        // 托盘区域
+        let mut tb_rect = RECT::default();
+        unsafe {
+            let _ = GetWindowRect(self.h_taskbar, &raw mut tb_rect);
+        }
+
         let tray_rect = unsafe {
             let h_notify = FindWindowExW(Some(self.h_taskbar), None, w!("TrayNotifyWnd"), None)
                 .unwrap_or_default();
@@ -158,16 +164,55 @@ impl TaskbarStrategy for Win11Strategy {
 
         let is_centered = Self::is_taskbar_center_align();
 
+        let tb_height = tb_rect.bottom - tb_rect.top;
+
+        let left_x = if uia_bounds.widgets.width > 0 {
+            uia_bounds.widgets.x + uia_bounds.widgets.width
+        } else {
+            tb_rect.left
+        };
+
+        let left_right_edge = if uia_bounds.start_btn.width > 0 {
+            uia_bounds.start_btn.x
+        } else {
+            uia_bounds.content.x
+        };
+
+        let left_width = (left_right_edge - left_x).max(0);
+
+        let left_space = Rect {
+            x: left_x,
+            y: tb_rect.top,
+            width: left_width,
+            height: tb_height,
+        };
+
+        let right_x = uia_bounds.content.x + uia_bounds.content.width;
+
+        let right_right_edge = if tray_rect.width > 0 {
+            tray_rect.x
+        } else {
+            tb_rect.right
+        };
+
+        let right_width = (right_right_edge - right_x).max(0);
+
+        let right_space = Rect {
+            x: right_x,
+            y: tb_rect.top,
+            width: right_width,
+            height: tb_height,
+        };
+
         Some(TaskbarLayout {
-            system_type: "win11".to_string(),
-            win10: None,
-            win11: Some(Win11Layout {
-                start_button: uia_bounds.start_btn,
-                widgets: uia_bounds.widgets,
-                content: uia_bounds.content,
-                tray: tray_rect,
+            space: AvailableSpace {
+                left: left_space,
+                right: right_space,
+            },
+            extra: ExtraLayoutInfo {
+                system_type: SystemType::Win11,
                 is_centered,
-            }),
+            },
         })
     }
 

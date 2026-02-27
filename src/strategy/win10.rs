@@ -33,11 +33,13 @@ use crate::{
     debug,
     error,
     strategy::{
+        AvailableSpace,
+        ExtraLayoutInfo,
         LayoutParams,
         Rect,
+        SystemType,
         TaskbarLayout,
         TaskbarStrategy,
-        Win10Layout,
     },
     trace,
     utils::{
@@ -217,17 +219,22 @@ impl TaskbarStrategy for LegacyStrategy {
                 "计算的布局 (win10)",
             );
 
+            let lyric_space = Rect {
+                x: bounds.x,
+                y: bounds.y,
+                width: bounds.w,
+                height: bounds.h,
+            };
+
             Some(TaskbarLayout {
-                system_type: "win10".to_string(),
-                win10: Some(Win10Layout {
-                    lyric_area: Rect {
-                        x: bounds.x,
-                        y: bounds.y,
-                        width: bounds.w,
-                        height: bounds.h,
-                    },
-                }),
-                win11: None,
+                space: AvailableSpace {
+                    left: Rect::default(),
+                    right: lyric_space,
+                },
+                extra: ExtraLayoutInfo {
+                    system_type: SystemType::Win10,
+                    is_centered: false,
+                },
             })
         }
     }
