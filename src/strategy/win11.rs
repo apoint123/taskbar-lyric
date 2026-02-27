@@ -181,8 +181,8 @@ impl TaskbarStrategy for Win11Strategy {
         let left_width = (left_right_edge - left_x).max(0);
 
         let left_space = Rect {
-            x: left_x,
-            y: tb_rect.top,
+            x: left_x - tb_rect.left,
+            y: 0,
             width: left_width,
             height: tb_height,
         };
@@ -198,8 +198,8 @@ impl TaskbarStrategy for Win11Strategy {
         let right_width = (right_right_edge - right_x).max(0);
 
         let right_space = Rect {
-            x: right_x,
-            y: tb_rect.top,
+            x: right_x - tb_rect.left,
+            y: 0,
             width: right_width,
             height: tb_height,
         };

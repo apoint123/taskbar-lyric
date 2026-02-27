@@ -160,6 +160,9 @@ impl TaskbarStrategy for LegacyStrategy {
             let mut rc_rebar = RECT::default();
             let _ = GetWindowRect(self.h_rebar, &raw mut rc_rebar);
 
+            let mut rc_taskbar = RECT::default();
+            let _ = GetWindowRect(self.h_taskbar, &raw mut rc_taskbar);
+
             trace!(
                 %rc_rebar.top, %rc_rebar.bottom, %rc_rebar.left, %rc_rebar.right,
                 "ReBar Rect"
@@ -188,8 +191,8 @@ impl TaskbarStrategy for LegacyStrategy {
                 let _ = MoveWindow(self.h_tasklist, 0, offset_y, rebar_w, new_tasklist_h, true);
 
                 CalculatedBounds {
-                    x: 0,
-                    y: offset_y + new_tasklist_h + GAP,
+                    x: rc_rebar.left - rc_taskbar.left,
+                    y: (rc_rebar.top - rc_taskbar.top) + offset_y + new_tasklist_h + GAP,
                     w: rebar_w,
                     h: params.lyric_width,
                 }
@@ -207,8 +210,8 @@ impl TaskbarStrategy for LegacyStrategy {
                 let _ = MoveWindow(self.h_tasklist, offset_x, 0, new_tasklist_w, rebar_h, true);
 
                 CalculatedBounds {
-                    x: offset_x + new_tasklist_w + GAP,
-                    y: 0,
+                    x: (rc_rebar.left - rc_taskbar.left) + offset_x + new_tasklist_w + GAP,
+                    y: rc_rebar.top - rc_taskbar.top,
                     w: params.lyric_width,
                     h: rebar_h,
                 }
