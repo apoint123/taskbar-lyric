@@ -166,19 +166,16 @@ impl TaskbarStrategy for Win11Strategy {
 
         let tb_height = tb_rect.bottom - tb_rect.top;
 
-        let left_x = if uia_bounds.widgets.width > 0 {
+        let content_left = uia_bounds.content.x;
+        let content_right = uia_bounds.content.x + uia_bounds.content.width;
+
+        let left_x = if uia_bounds.widgets.width > 0 && uia_bounds.widgets.x < content_left {
             uia_bounds.widgets.x + uia_bounds.widgets.width
         } else {
             tb_rect.left
         };
 
-        let left_right_edge = if uia_bounds.start_btn.width > 0 {
-            uia_bounds.start_btn.x
-        } else {
-            uia_bounds.content.x
-        };
-
-        let left_width = (left_right_edge - left_x).max(0);
+        let left_width = (content_left - left_x).max(0);
 
         let left_space = Rect {
             x: left_x - tb_rect.left,
@@ -187,13 +184,16 @@ impl TaskbarStrategy for Win11Strategy {
             height: tb_height,
         };
 
-        let right_x = uia_bounds.content.x + uia_bounds.content.width;
+        let right_x = content_right;
 
-        let right_right_edge = if tray_rect.width > 0 {
-            tray_rect.x
-        } else {
-            tb_rect.right
-        };
+        let right_right_edge =
+            if uia_bounds.widgets.width > 0 && uia_bounds.widgets.x > content_right {
+                uia_bounds.widgets.x
+            } else if tray_rect.width > 0 {
+                tray_rect.x
+            } else {
+                tb_rect.right
+            };
 
         let right_width = (right_right_edge - right_x).max(0);
 
